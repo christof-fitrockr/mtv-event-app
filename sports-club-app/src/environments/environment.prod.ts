@@ -1,5 +1,5 @@
 export const environment = {
-  production: false,
+  production: true,
   firebase: {
     apiKey: "AIzaSyAyyCRYwmeEjnl4YNcm0fY5z986HaDCS08",
     authDomain: "mtv-event-app.firebaseapp.com",

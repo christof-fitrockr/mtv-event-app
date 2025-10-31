@@ -1,15 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { QRCodeModule } from 'angularx-qrcode';
+import { QrCodeComponent } from 'ng-qrcode';
 import { FirestoreService } from '../../services/firestore.service';
 
 @Component({
   selector: 'app-admin-dashboard',
   standalone: true,
-  imports: [CommonModule, FormsModule, QRCodeModule],
+  imports: [CommonModule, FormsModule, QrCodeComponent],
   templateUrl: './admin-dashboard.component.html',
-  styleUrls: ['./admin-dashboard.component.css']
+  styleUrl: './admin-dashboard.component.css',
 })
 export class AdminDashboardComponent implements OnInit {
   events: any[] = [];
@@ -64,5 +64,11 @@ export class AdminDashboardComponent implements OnInit {
     if (this.selectedEventId) {
       this.attendance = await this.firestoreService.getAttendance(this.selectedEventId, this.selectedDate);
     }
+  }
+
+  get selectedEventTitle(): string {
+    if (!this.selectedEventId) return '';
+    const event = this.events.find(e => e.id === this.selectedEventId);
+    return event ? event.title : '';
   }
 }

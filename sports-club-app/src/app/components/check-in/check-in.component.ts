@@ -9,7 +9,7 @@ import { FirestoreService } from '../../services/firestore.service';
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './check-in.component.html',
-  styleUrls: ['./check-in.component.css']
+  styleUrl: './check-in.component.css'
 })
 export class CheckInComponent implements OnInit {
   event: any;

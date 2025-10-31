@@ -26,12 +26,12 @@
   <div *ngFor="let event of events">
     <h4>{{ event.title }}</h4>
     <p>{{ event.description }}</p>
-    <qrcode [qrdata]="event.qrCodeData" [width]="256"></qrcode>
+    <qr-code [value]="event.qrCodeData"></qr-code>
     <button (click)="viewAttendance(event.id)">View Attendance</button>
   </div>
 
   <div *ngIf="selectedEventId">
-    <h3>Attendance for {{ events.find(e => e.id === selectedEventId)?.title }}</h3>
+    <h3>Attendance for {{ selectedEventTitle }}</h3>
     <input type="date" [(ngModel)]="selectedDate" (change)="loadAttendance()">
     <ul>
       <li *ngFor="let record of attendance">
