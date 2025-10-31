@@ -1,0 +1,15 @@
+<div *ngIf="event">
+  <h2>{{ event.title }}</h2>
+  <div *ngIf="!isCheckedIn">
+    <form (ngSubmit)="checkIn()">
+      <input type="text" [(ngModel)]="name" name="name" placeholder="Your Name (Optional)">
+      <button type="submit">Confirm Participation</button>
+    </form>
+  </div>
+  <div *ngIf="isCheckedIn">
+    <p>You have already checked in for this event.</p>
+  </div>
+</div>
+<div *ngIf="!event">
+  <p>Loading event...</p>
+</div>

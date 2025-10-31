@@ -1,0 +1,42 @@
+<div>
+  <h2>Admin Dashboard</h2>
+  <form (ngSubmit)="createEvent()">
+    <input type="text" [(ngModel)]="newEvent.title" name="title" placeholder="Title" required>
+    <input type="text" [(ngModel)]="newEvent.description" name="description" placeholder="Description" required>
+    <input type="text" [(ngModel)]="newEvent.location" name="location" placeholder="Location" required>
+
+    <h4>Recurrence</h4>
+    <select [(ngModel)]="newEvent.recurrence.type" name="recurrenceType">
+      <option value="daily">Daily</option>
+      <option value="weekly">Weekly</option>
+    </select>
+    <div *ngIf="newEvent.recurrence.type === 'weekly'">
+      <label *ngFor="let day of daysOfWeek">
+        <input type="checkbox" [value]="day" (change)="onDayChange($event)"> {{day}}
+      </label>
+    </div>
+    <input type="time" [(ngModel)]="newEvent.recurrence.time" name="recurrenceTime">
+
+    <button type="submit">Create Event</button>
+  </form>
+
+  <hr>
+
+  <h3>Events</h3>
+  <div *ngFor="let event of events">
+    <h4>{{ event.title }}</h4>
+    <p>{{ event.description }}</p>
+    <qrcode [qrdata]="event.qrCodeData" [width]="256"></qrcode>
+    <button (click)="viewAttendance(event.id)">View Attendance</button>
+  </div>
+
+  <div *ngIf="selectedEventId">
+    <h3>Attendance for {{ events.find(e => e.id === selectedEventId)?.title }}</h3>
+    <input type="date" [(ngModel)]="selectedDate" (change)="loadAttendance()">
+    <ul>
+      <li *ngFor="let record of attendance">
+        {{ record.name || 'Anonymous' }} - {{ record.checkInTime.toDate() | date:'shortTime' }}
+      </li>
+    </ul>
+  </div>
+</div>

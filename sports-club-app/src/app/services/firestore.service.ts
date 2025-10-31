@@ -1,0 +1,56 @@
+import { Injectable } from '@angular/core';
+import { Firestore, collection, addDoc, doc, getDoc, getDocs, Timestamp, query, where, updateDoc } from '@angular/fire/firestore';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class FirestoreService {
+
+  constructor(private firestore: Firestore) { }
+
+  // --- Event Management ---
+
+  async createEvent(eventData: any): Promise<string> {
+    const eventCollection = collection(this.firestore, 'events');
+    const docRef = await addDoc(eventCollection, {
+      ...eventData,
+      dateCreated: Timestamp.now(),
+    });
+    return docRef.id;
+  }
+
+  async getEvent(eventId: string): Promise<any> {
+    const eventDoc = doc(this.firestore, 'events', eventId);
+    const docSnap = await getDoc(eventDoc);
+    return docSnap.exists() ? { id: docSnap.id, ...docSnap.data() } : null;
+  }
+
+  async getAllEvents(): Promise<any[]> {
+    const eventCollection = collection(this.firestore, 'events');
+    const querySnapshot = await getDocs(eventCollection);
+    return querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+  }
+
+  async updateEvent(eventId: string, eventData: any): Promise<void> {
+    const eventDoc = doc(this.firestore, 'events', eventId);
+    await updateDoc(eventDoc, eventData);
+  }
+
+  // --- Attendance Management ---
+
+  async addAttendance(eventId: string, attendanceData: any): Promise<void> {
+    const attendanceCollection = collection(this.firestore, 'events', eventId, 'attendance');
+    await addDoc(attendanceCollection, {
+      ...attendanceData,
+      checkInTime: Timestamp.now(),
+      dateOfEvent: new Date().toISOString().slice(0, 10), // YYYY-MM-DD
+    });
+  }
+
+  async getAttendance(eventId: string, date: string): Promise<any[]> {
+    const attendanceCollection = collection(this.firestore, 'events', eventId, 'attendance');
+    const q = query(attendanceCollection, where('dateOfEvent', '==', date));
+    const querySnapshot = await getDocs(q);
+    return querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+  }
+}
