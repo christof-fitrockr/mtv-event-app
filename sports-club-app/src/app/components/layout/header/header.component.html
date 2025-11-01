@@ -1,20 +1,42 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
   <div class="container-fluid">
-    <a class="navbar-brand" href="#">Sports Club</a>
+    <a class="navbar-brand" routerLink="/">Sports Club</a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav ms-auto">
-        <li class="nav-item">
-          <a class="nav-link" routerLink="/admin">Dashboard</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" routerLink="/profile">Profile</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#">Logout</a>
-        </li>
+        <ng-container *ngIf="user | async as currentUser; else showLogin">
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/admin">Dashboard</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/profile">Profile</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/manage-locations">Manage Locations</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/manage-events">Manage Events</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/manage-coaches">Manage Coaches</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/statistics">Statistics</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/calendar">Calendar</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" (click)="logout()">Logout</a>
+          </li>
+        </ng-container>
+        <ng-template #showLogin>
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/login">Login</a>
+          </li>
+        </ng-template>
       </ul>
     </div>
   </div>
