@@ -1,0 +1,72 @@
+<div class="container mt-5">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Manage Events</h2>
+    <button class="btn btn-primary" (click)="showAddForm()">Add Event</button>
+  </div>
+
+  <div *ngIf="showForm" class="card mb-4">
+    <div class="card-body">
+      <h3 class="card-title">{{ editingEvent ? 'Edit Event' : 'Add New Event' }}</h3>
+      <form (ngSubmit)="saveEvent()">
+        <div class="mb-3">
+          <label for="title" class="form-label">Title</label>
+          <input type="text" class="form-control" id="title" [(ngModel)]="event.title" name="title" required>
+        </div>
+        <div class="mb-3">
+          <label for="description" class="form-label">Description</label>
+          <input type="text" class="form-control" id="description" [(ngModel)]="event.description" name="description" required>
+        </div>
+        <div class="mb-3">
+          <label for="location" class="form-label">Location</label>
+          <select class="form-select" id="location" [(ngModel)]="event.location" name="location" required>
+            <option *ngFor="let loc of locations" [value]="loc.name">{{ loc.name }}</option>
+          </select>
+        </div>
+        <div class="mb-3">
+          <h4>Recurrence</h4>
+          <select class="form-select" [(ngModel)]="event.recurrence.type" name="recurrenceType">
+            <option value="daily">Daily</option>
+            <option value="weekly">Weekly</option>
+          </select>
+        </div>
+        <div class="mb-3" *ngIf="event.recurrence.type === 'weekly'">
+          <label class="form-label">Days of the Week</label>
+          <div>
+            <div class="form-check form-check-inline" *ngFor="let day of daysOfWeek">
+              <input class="form-check-input" type="checkbox" [value]="day" (change)="onDayChange($event)">
+              <label class="form-check-label">{{day}}</label>
+            </div>
+          </div>
+        </div>
+        <div class="mb-3">
+          <label for="recurrenceTime" class="form-label">Time</label>
+          <input type="time" class="form-control" id="recurrenceTime" [(ngModel)]="event.recurrence.time" name="recurrenceTime">
+        </div>
+        <button type="submit" class="btn btn-success">{{ editingEvent ? 'Update' : 'Save' }}</button>
+        <button type="button" class="btn btn-secondary ms-2" (click)="cancel()">Cancel</button>
+      </form>
+    </div>
+  </div>
+
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th scope="col">Title</th>
+        <th scope="col">Description</th>
+        <th scope="col">Location</th>
+        <th scope="col">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let ev of events">
+        <td>{{ ev.title }}</td>
+        <td>{{ ev.description }}</td>
+        <td>{{ ev.location }}</td>
+        <td>
+          <button class="btn btn-sm btn-warning me-2" (click)="editEvent(ev)">Edit</button>
+          <button class="btn btn-sm btn-danger" (click)="deleteEvent(ev.id)">Delete</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
