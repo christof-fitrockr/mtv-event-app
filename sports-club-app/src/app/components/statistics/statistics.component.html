@@ -1,0 +1,23 @@
+<div class="container mt-5">
+  <h2>Event Statistics</h2>
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th scope="col">Event</th>
+        <th scope="col">Date</th>
+        <th scope="col">Capacity</th>
+        <th scope="col">Occupancy</th>
+        <th scope="col">Occupancy %</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let stat of statistics">
+        <td>{{ stat.title }}</td>
+        <td>{{ stat.date }}</td>
+        <td>{{ stat.capacity }}</td>
+        <td>{{ stat.occupancy }}</td>
+        <td>{{ stat.occupancyPercentage | number:'1.2-2' }}%</td>
+      </tr>
+    </tbody>
+  </table>
+</div>

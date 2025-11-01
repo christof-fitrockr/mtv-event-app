@@ -18,6 +18,7 @@ export class ManageEventsComponent implements OnInit {
     title: '',
     description: '',
     location: '',
+    capacity: 0,
     recurrence: {
       type: 'weekly',
       days: [] as string[],
@@ -60,6 +61,7 @@ export class ManageEventsComponent implements OnInit {
       title: '',
       description: '',
       location: '',
+      capacity: 0,
       recurrence: {
         type: 'weekly',
         days: [] as string[],

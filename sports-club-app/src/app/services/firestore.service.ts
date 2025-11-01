@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Firestore, collection, addDoc, doc, getDoc, getDocs, Timestamp, query, where, updateDoc, deleteDoc } from '@angular/fire/firestore';
+import { Firestore, collection, addDoc, doc, getDoc, getDocs, Timestamp, query, where, updateDoc, deleteDoc, collectionGroup } from '@angular/fire/firestore';
 
 @Injectable({
   providedIn: 'root'
@@ -39,6 +39,33 @@ export class FirestoreService {
   async deleteEvent(eventId: string): Promise<void> {
     const eventDoc = doc(this.firestore, 'events', eventId);
     await deleteDoc(eventDoc);
+  }
+
+  async getEventStatistics(): Promise<any[]> {
+    const events = await this.getAllEvents();
+    const attendanceQuery = query(collectionGroup(this.firestore, 'attendance'));
+    const attendanceSnapshot = await getDocs(attendanceQuery);
+    const attendanceByEvent: { [key: string]: number } = {};
+
+    attendanceSnapshot.docs.forEach(doc => {
+      const eventId = doc.ref.parent.parent?.id;
+      if (eventId) {
+        if (!attendanceByEvent[eventId]) {
+          attendanceByEvent[eventId] = 0;
+        }
+        attendanceByEvent[eventId]++;
+      }
+    });
+
+    return events.map(event => {
+      const occupancy = attendanceByEvent[event.id] || 0;
+      const occupancyPercentage = event.capacity > 0 ? (occupancy / event.capacity) * 100 : 0;
+      return {
+        ...event,
+        occupancy,
+        occupancyPercentage,
+      };
+    });
   }
 
   // --- Attendance Management ---

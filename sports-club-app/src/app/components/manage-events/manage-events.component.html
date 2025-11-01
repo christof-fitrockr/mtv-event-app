@@ -23,6 +23,10 @@
           </select>
         </div>
         <div class="mb-3">
+          <label for="capacity" class="form-label">Capacity</label>
+          <input type="number" class="form-control" id="capacity" [(ngModel)]="event.capacity" name="capacity" required>
+        </div>
+        <div class="mb-3">
           <h4>Recurrence</h4>
           <select class="form-select" [(ngModel)]="event.recurrence.type" name="recurrenceType">
             <option value="daily">Daily</option>
@@ -54,6 +58,7 @@
         <th scope="col">Title</th>
         <th scope="col">Description</th>
         <th scope="col">Location</th>
+        <th scope="col">Capacity</th>
         <th scope="col">Actions</th>
       </tr>
     </thead>
@@ -62,6 +67,7 @@
         <td>{{ ev.title }}</td>
         <td>{{ ev.description }}</td>
         <td>{{ ev.location }}</td>
+        <td>{{ ev.capacity }}</td>
         <td>
           <button class="btn btn-sm btn-warning me-2" (click)="editEvent(ev)">Edit</button>
           <button class="btn btn-sm btn-danger" (click)="deleteEvent(ev.id)">Delete</button>
