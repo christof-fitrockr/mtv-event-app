@@ -87,6 +87,15 @@ export class FirestoreService {
     return querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
   }
 
+  async getAllAttendance(): Promise<any[]> {
+    const attendanceQuery = query(collectionGroup(this.firestore, 'attendance'));
+    const attendanceSnapshot = await getDocs(attendanceQuery);
+    return attendanceSnapshot.docs.map(doc => {
+      const eventId = doc.ref.parent.parent?.id;
+      return { id: doc.id, eventId, ...doc.data() };
+    });
+  }
+
   // --- Location Management ---
 
   async getLocations(): Promise<any[]> {

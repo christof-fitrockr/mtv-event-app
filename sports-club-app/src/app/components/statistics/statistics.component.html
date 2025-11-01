@@ -4,19 +4,35 @@
     <thead>
       <tr>
         <th scope="col">Event</th>
-        <th scope="col">Date</th>
         <th scope="col">Capacity</th>
-        <th scope="col">Occupancy</th>
-        <th scope="col">Occupancy %</th>
+        <th scope="col">Average Attendees</th>
+        <th scope="col">Average Occupancy %</th>
       </tr>
     </thead>
     <tbody>
       <tr *ngFor="let stat of statistics">
         <td>{{ stat.title }}</td>
-        <td>{{ stat.date }}</td>
         <td>{{ stat.capacity }}</td>
-        <td>{{ stat.occupancy }}</td>
-        <td>{{ stat.occupancyPercentage | number:'1.2-2' }}%</td>
+        <td>{{ stat.averageAttendees }}</td>
+        <td>{{ stat.averageOccupancy }}%</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2 class="mt-5">Event Instances</h2>
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th scope="col">Event Name</th>
+        <th scope="col">Date</th>
+        <th scope="col">Check-ins</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let instance of eventInstances">
+        <td>{{ instance.eventName }}</td>
+        <td>{{ instance.date }}</td>
+        <td>{{ instance.checkIns }}</td>
       </tr>
     </tbody>
   </table>
