@@ -1,7 +1,7 @@
 <div class="container mt-4">
   <div class="d-flex justify-content-between align-items-center mb-4">
     <h2>Admin Dashboard</h2>
-    <button class="btn btn-primary" routerLink="/create-event">Create Event</button>
+    <button class="btn btn-primary" [routerLink]="['/manage-events']" [queryParams]="{ action: 'add' }">Create Event</button>
   </div>
 
   <hr>

@@ -36,6 +36,11 @@ export class FirestoreService {
     await updateDoc(eventDoc, eventData);
   }
 
+  async deleteEvent(eventId: string): Promise<void> {
+    const eventDoc = doc(this.firestore, 'events', eventId);
+    await deleteDoc(eventDoc);
+  }
+
   // --- Attendance Management ---
 
   async addAttendance(eventId: string, attendanceData: any): Promise<void> {
