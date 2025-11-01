@@ -71,12 +71,12 @@ export class FirestoreService {
 
   // --- Attendance Management ---
 
-  async addAttendance(eventId: string, attendanceData: any): Promise<void> {
+  async addAttendance(eventId: string, date: string, attendanceData: any): Promise<void> {
     const attendanceCollection = collection(this.firestore, 'events', eventId, 'attendance');
     await addDoc(attendanceCollection, {
       ...attendanceData,
       checkInTime: Timestamp.now(),
-      dateOfEvent: new Date().toISOString().slice(0, 10), // YYYY-MM-DD
+      dateOfEvent: date,
     });
   }
 
