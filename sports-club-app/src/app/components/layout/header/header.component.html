@@ -5,7 +5,7 @@
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarNav">
-      <ul class="navbar-nav ms-auto">
+      <ul class="navbar-nav ms-auto" *ngIf="isLoggedIn">
         <li class="nav-item">
           <a class="nav-link" routerLink="/admin">Dashboard</a>
         </li>
@@ -19,13 +19,21 @@
           <a class="nav-link" routerLink="/manage-events">Manage Events</a>
         </li>
         <li class="nav-item">
+          <a class="nav-link" routerLink="/manage-coaches">Manage Coaches</a>
+        </li>
+        <li class="nav-item">
           <a class="nav-link" routerLink="/statistics">Statistics</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" routerLink="/calendar">Calendar</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="#">Logout</a>
+          <a class="nav-link" (click)="logout()" href="#">Logout</a>
+        </li>
+      </ul>
+      <ul class="navbar-nav ms-auto" *ngIf="!isLoggedIn">
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/login">Login</a>
         </li>
       </ul>
     </div>

@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
-import { Firestore, collection, addDoc, doc, getDoc, getDocs, Timestamp, query, where, updateDoc, deleteDoc, collectionGroup } from '@angular/fire/firestore';
+import { Firestore, collection, addDoc, doc, getDoc, getDocs, Timestamp, query, where, updateDoc, deleteDoc, collectionGroup, collectionData } from '@angular/fire/firestore';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -108,5 +109,28 @@ export class FirestoreService {
   async deleteLocation(locationId: string): Promise<void> {
     const locationDoc = doc(this.firestore, 'locations', locationId);
     await deleteDoc(locationDoc);
+  }
+
+  // --- Coach Management ---
+
+  getCoaches(): Observable<any[]> {
+    const coachCollection = collection(this.firestore, 'coaches');
+    return collectionData(coachCollection, { idField: 'id' });
+  }
+
+  async addCoach(coachData: any): Promise<string> {
+    const coachCollection = collection(this.firestore, 'coaches');
+    const docRef = await addDoc(coachCollection, coachData);
+    return docRef.id;
+  }
+
+  async updateCoach(coach: any): Promise<void> {
+    const coachDoc = doc(this.firestore, 'coaches', coach.id);
+    await updateDoc(coachDoc, coach);
+  }
+
+  async deleteCoach(coachId: string): Promise<void> {
+    const coachDoc = doc(this.firestore, 'coaches', coachId);
+    await deleteDoc(coachDoc);
   }
 }

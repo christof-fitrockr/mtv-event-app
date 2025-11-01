@@ -1,1 +1,21 @@
-<p>profile works!</p>
+<div class="container mt-4">
+  <h2>User Profile</h2>
+  <div *ngIf="user">
+    <form (ngSubmit)="updateProfile()">
+      <div class="mb-3">
+        <label for="displayName" class="form-label">Display Name</label>
+        <input type="text" class="form-control" id="displayName" [(ngModel)]="displayName" name="displayName">
+      </div>
+      <div class="mb-3">
+        <label for="email" class="form-label">Email address</label>
+        <input type="email" class="form-control" id="email" [(ngModel)]="email" name="email">
+      </div>
+      <button type="submit" class="btn btn-primary">Update Profile</button>
+    </form>
+    <hr>
+    <button class="btn btn-secondary" (click)="sendPasswordReset()">Send Password Reset Email</button>
+  </div>
+  <div *ngIf="!user">
+    <p>Loading user profile...</p>
+  </div>
+</div>
