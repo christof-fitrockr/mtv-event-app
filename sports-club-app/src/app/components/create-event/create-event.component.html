@@ -14,7 +14,9 @@
     </div>
     <div class="mb-3">
       <label for="location" class="form-label">Location</label>
-      <input type="text" class="form-control" id="location" [(ngModel)]="newEvent.location" name="location" required>
+      <select class="form-select" id="location" [(ngModel)]="newEvent.location" name="location" required>
+        <option *ngFor="let loc of locations" [value]="loc.name">{{ loc.name }}</option>
+      </select>
     </div>
     <div class="mb-3">
       <h4>Recurrence</h4>

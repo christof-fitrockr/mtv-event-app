@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Firestore, collection, addDoc, doc, getDoc, getDocs, Timestamp, query, where, updateDoc } from '@angular/fire/firestore';
+import { Firestore, collection, addDoc, doc, getDoc, getDocs, Timestamp, query, where, updateDoc, deleteDoc } from '@angular/fire/firestore';
 
 @Injectable({
   providedIn: 'root'
@@ -52,5 +52,29 @@ export class FirestoreService {
     const q = query(attendanceCollection, where('dateOfEvent', '==', date));
     const querySnapshot = await getDocs(q);
     return querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+  }
+
+  // --- Location Management ---
+
+  async getLocations(): Promise<any[]> {
+    const locationCollection = collection(this.firestore, 'locations');
+    const querySnapshot = await getDocs(locationCollection);
+    return querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+  }
+
+  async addLocation(locationData: any): Promise<string> {
+    const locationCollection = collection(this.firestore, 'locations');
+    const docRef = await addDoc(locationCollection, locationData);
+    return docRef.id;
+  }
+
+  async updateLocation(locationId: string, locationData: any): Promise<void> {
+    const locationDoc = doc(this.firestore, 'locations', locationId);
+    await updateDoc(locationDoc, locationData);
+  }
+
+  async deleteLocation(locationId: string): Promise<void> {
+    const locationDoc = doc(this.firestore, 'locations', locationId);
+    await deleteDoc(locationDoc);
   }
 }
