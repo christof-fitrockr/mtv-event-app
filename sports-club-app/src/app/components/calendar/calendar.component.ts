@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { CalendarModule, DateAdapter, CalendarEvent } from 'angular-calendar';
+import { CalendarModule, DateAdapter, CalendarEvent, CalendarView } from 'angular-calendar';
 import { adapterFactory } from 'angular-calendar/date-adapters/date-fns';
 import { FirestoreService } from '../../services/firestore.service';
+import { addDays, setHours, setMinutes, startOfDay } from 'date-fns';
 
 interface MyCalendarEvent extends CalendarEvent {
   location: string;
@@ -23,12 +24,12 @@ interface MyCalendarEvent extends CalendarEvent {
   ],
 })
 export class CalendarComponent implements OnInit {
-  view: string = 'month';
+  view: CalendarView = CalendarView.Week;
   viewDate: Date = new Date();
   events: MyCalendarEvent[] = [];
-  filteredEvents: MyCalendarEvent[] = [];
   locations: any[] = [];
   locationFilter: string = '';
+  CalendarView = CalendarView;
 
   constructor(private firestoreService: FirestoreService) {}
 
@@ -38,13 +39,34 @@ export class CalendarComponent implements OnInit {
   }
 
   async loadEvents() {
-    const events = await this.firestoreService.getAllEvents();
-    this.events = events.map(event => ({
-      start: new Date(event.recurrence.time),
-      title: event.title,
-      location: event.location,
-    }));
-    this.filterEvents();
+    const dbEvents = await this.firestoreService.getAllEvents();
+    const calendarEvents: MyCalendarEvent[] = [];
+    const dayMap = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
+
+    dbEvents.forEach(event => {
+      if (event.startDate && event.endDate && event.recurrenceDays && event.startTime && event.endTime) {
+        let current = new Date(event.startDate);
+        const end = new Date(event.endDate);
+        const [startHour, startMinute] = event.startTime.split(':').map(Number);
+        const [endHour, endMinute] = event.endTime.split(':').map(Number);
+
+        while (current <= end) {
+          const dayOfWeek = dayMap[current.getDay()];
+          if (event.recurrenceDays.includes(dayOfWeek)) {
+            const start = setMinutes(setHours(startOfDay(current), startHour), startMinute);
+            const end = setMinutes(setHours(startOfDay(current), endHour), endMinute);
+            calendarEvents.push({
+              start,
+              end,
+              title: event.title,
+              location: event.location,
+            });
+          }
+          current = addDays(current, 1);
+        }
+      }
+    });
+    this.events = calendarEvents;
   }
 
   async loadLocations() {
@@ -52,11 +74,11 @@ export class CalendarComponent implements OnInit {
   }
 
   filterEvents() {
-    if (this.locationFilter) {
-      this.filteredEvents = this.events.filter(event => event.location === this.locationFilter);
-    } else {
-      this.filteredEvents = this.events;
-    }
+    // This will be implemented later if needed
+  }
+
+  setView(view: CalendarView) {
+    this.view = view;
   }
 
   handleEvent(action: string, event: CalendarEvent): void {

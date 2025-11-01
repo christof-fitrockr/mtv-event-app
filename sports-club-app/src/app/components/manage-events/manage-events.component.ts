@@ -19,11 +19,11 @@ export class ManageEventsComponent implements OnInit {
     description: '',
     location: '',
     capacity: 0,
-    recurrence: {
-      type: 'weekly',
-      days: [] as string[],
-      time: ''
-    },
+    recurrenceDays: [] as string[],
+    startTime: '',
+    endTime: '',
+    startDate: '',
+    endDate: '',
     qrCodeData: ''
   };
   showForm = false;
@@ -62,11 +62,11 @@ export class ManageEventsComponent implements OnInit {
       description: '',
       location: '',
       capacity: 0,
-      recurrence: {
-        type: 'weekly',
-        days: [] as string[],
-        time: ''
-      },
+      recurrenceDays: [] as string[],
+      startTime: '',
+      endTime: '',
+      startDate: '',
+      endDate: '',
       qrCodeData: ''
     };
   }
@@ -84,9 +84,9 @@ export class ManageEventsComponent implements OnInit {
   onDayChange(event: any) {
     const day = event.target.value;
     if (event.target.checked) {
-      this.event.recurrence.days.push(day);
+      this.event.recurrenceDays.push(day);
     } else {
-      this.event.recurrence.days = this.event.recurrence.days.filter((d: string) => d !== day);
+      this.event.recurrenceDays = this.event.recurrenceDays.filter((d: string) => d !== day);
     }
   }
 

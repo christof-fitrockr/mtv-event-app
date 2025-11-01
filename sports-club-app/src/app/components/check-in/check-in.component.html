@@ -7,6 +7,12 @@
             <h2 class="card-title text-center mb-4">{{ event.title }}</h2>
             <p><strong>Description:</strong> {{ event.description }}</p>
             <p><strong>Location:</strong> {{ event.location }}</p>
+            <div class="mb-3">
+              <label for="eventDate" class="form-label">Select Event Date</label>
+              <select class="form-select" id="eventDate" [(ngModel)]="selectedDate" (change)="onDateChange()">
+                <option *ngFor="let date of eventDates" [value]="date">{{ date }}</option>
+              </select>
+            </div>
             <hr>
             <div *ngIf="!isCheckedIn; else alreadyCheckedIn">
               <form (ngSubmit)="checkIn()">
@@ -21,7 +27,7 @@
             </div>
             <ng-template #alreadyCheckedIn>
               <div class="alert alert-success text-center" role="alert">
-                You have successfully checked in for this event!
+                You have successfully checked in for this event on {{ selectedDate }}!
               </div>
             </ng-template>
           </div>

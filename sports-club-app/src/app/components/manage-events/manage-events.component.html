@@ -27,24 +27,33 @@
           <input type="number" class="form-control" id="capacity" [(ngModel)]="event.capacity" name="capacity" required>
         </div>
         <div class="mb-3">
-          <h4>Recurrence</h4>
-          <select class="form-select" [(ngModel)]="event.recurrence.type" name="recurrenceType">
-            <option value="daily">Daily</option>
-            <option value="weekly">Weekly</option>
-          </select>
-        </div>
-        <div class="mb-3" *ngIf="event.recurrence.type === 'weekly'">
           <label class="form-label">Days of the Week</label>
           <div>
             <div class="form-check form-check-inline" *ngFor="let day of daysOfWeek">
-              <input class="form-check-input" type="checkbox" [value]="day" (change)="onDayChange($event)">
+              <input class="form-check-input" type="checkbox" [value]="day" (change)="onDayChange($event)" [checked]="event.recurrenceDays.includes(day)">
               <label class="form-check-label">{{day}}</label>
             </div>
           </div>
         </div>
-        <div class="mb-3">
-          <label for="recurrenceTime" class="form-label">Time</label>
-          <input type="time" class="form-control" id="recurrenceTime" [(ngModel)]="event.recurrence.time" name="recurrenceTime">
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label for="startTime" class="form-label">Start Time</label>
+            <input type="time" class="form-control" id="startTime" [(ngModel)]="event.startTime" name="startTime">
+          </div>
+          <div class="col-md-6 mb-3">
+            <label for="endTime" class="form-label">End Time</label>
+            <input type="time" class="form-control" id="endTime" [(ngModel)]="event.endTime" name="endTime">
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label for="startDate" class="form-label">Start Date</label>
+            <input type="date" class="form-control" id="startDate" [(ngModel)]="event.startDate" name="startDate">
+          </div>
+          <div class="col-md-6 mb-3">
+            <label for="endDate" class="form-label">End Date</label>
+            <input type="date" class="form-control" id="endDate" [(ngModel)]="event.endDate" name="endDate">
+          </div>
         </div>
         <button type="submit" class="btn btn-success">{{ editingEvent ? 'Update' : 'Save' }}</button>
         <button type="button" class="btn btn-secondary ms-2" (click)="cancel()">Cancel</button>
