@@ -14,6 +14,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 export class ManageEventsComponent implements OnInit {
   events: any[] = [];
   locations: any[] = [];
+  coaches: any[] = [];
   event: any = {
     title: '',
     description: '',
@@ -24,6 +25,7 @@ export class ManageEventsComponent implements OnInit {
     endTime: '',
     startDate: '',
     endDate: '',
+    coaches: [] as string[],
     qrCodeData: ''
   };
   showForm = false;
@@ -39,6 +41,7 @@ export class ManageEventsComponent implements OnInit {
   ngOnInit(): void {
     this.loadEvents();
     this.loadLocations();
+    this.loadCoaches();
     this.route.queryParams.subscribe(params => {
       if (params['action'] === 'add') {
         this.showAddForm();
@@ -54,6 +57,12 @@ export class ManageEventsComponent implements OnInit {
     this.locations = await this.firestoreService.getLocations();
   }
 
+  async loadCoaches() {
+    this.firestoreService.getCoaches().subscribe(coaches => {
+      this.coaches = coaches;
+    });
+  }
+
   showAddForm() {
     this.showForm = true;
     this.editingEvent = false;
@@ -67,6 +76,7 @@ export class ManageEventsComponent implements OnInit {
       endTime: '',
       startDate: '',
       endDate: '',
+      coaches: [] as string[],
       qrCodeData: ''
     };
   }

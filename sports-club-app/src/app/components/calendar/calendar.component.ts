@@ -8,6 +8,7 @@ import { addDays, setHours, setMinutes, startOfDay } from 'date-fns';
 
 interface MyCalendarEvent extends CalendarEvent {
   location: string;
+  coaches: string[];
 }
 
 @Component({
@@ -60,6 +61,7 @@ export class CalendarComponent implements OnInit {
               end,
               title: event.title,
               location: event.location,
+              coaches: event.coaches || [],
             });
           }
           current = addDays(current, 1);
@@ -82,6 +84,8 @@ export class CalendarComponent implements OnInit {
   }
 
   handleEvent(action: string, event: CalendarEvent): void {
-    alert(`Event ${action}: ${event.title}`);
+    const myEvent = event as MyCalendarEvent;
+    const coaches = myEvent.coaches?.join(', ');
+    alert(`Event ${action}: ${event.title}\nCoaches: ${coaches}`);
   }
 }
