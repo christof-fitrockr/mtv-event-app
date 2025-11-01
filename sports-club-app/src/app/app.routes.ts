@@ -8,6 +8,7 @@ import { ManageLocationsComponent } from './components/manage-locations/manage-l
 import { ManageEventsComponent } from './components/manage-events/manage-events.component';
 import { StatisticsComponent } from './components/statistics/statistics.component';
 import { CalendarComponent } from './components/calendar/calendar.component';
+import { ManageCoachesComponent } from './components/manage-coaches/manage-coaches.component';
 
 export const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -15,6 +16,7 @@ export const routes: Routes = [
   { path: 'profile', component: ProfileComponent, canActivate: [authGuard] },
   { path: 'manage-locations', component: ManageLocationsComponent, canActivate: [authGuard] },
   { path: 'manage-events', component: ManageEventsComponent, canActivate: [authGuard] },
+  { path: 'manage-coaches', component: ManageCoachesComponent, canActivate: [authGuard] },
   { path: 'statistics', component: StatisticsComponent, canActivate: [authGuard] },
   { path: 'calendar', component: CalendarComponent, canActivate: [authGuard] },
   { path: 'checkin/:eventId', component: CheckInComponent },

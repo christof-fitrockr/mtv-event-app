@@ -1,0 +1,70 @@
+<div class="container mt-4">
+  <h2>Manage Coaches</h2>
+
+  <!-- Add Coach Form -->
+  <div class="card mb-4">
+    <div class="card-body">
+      <h5 class="card-title">Add New Coach</h5>
+      <form (ngSubmit)="addCoach()">
+        <div class="mb-3">
+          <label for="newCoachName" class="form-label">Name</label>
+          <input type="text" class="form-control" id="newCoachName" [(ngModel)]="newCoach.name" name="newCoachName" required>
+        </div>
+        <div class="mb-3">
+          <label for="newCoachEmail" class="form-label">Email</label>
+          <input type="email" class="form-control" id="newCoachEmail" [(ngModel)]="newCoach.email" name="newCoachEmail" required>
+        </div>
+        <div class="mb-3">
+          <label for="newCoachBio" class="form-label">Bio</label>
+          <textarea class="form-control" id="newCoachBio" [(ngModel)]="newCoach.bio" name="newCoachBio" rows="3"></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Add Coach</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Coaches Table -->
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Bio</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let coach of coaches">
+        <td>{{ coach.name }}</td>
+        <td>{{ coach.email }}</td>
+        <td>{{ coach.bio }}</td>
+        <td>
+          <button class="btn btn-sm btn-secondary me-2" (click)="editCoach(coach)">Edit</button>
+          <button class="btn btn-sm btn-danger" (click)="deleteCoach(coach.id!)">Delete</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- Edit Coach Form -->
+  <div *ngIf="editingCoach">
+    <hr>
+    <h5>Edit Coach</h5>
+    <form (ngSubmit)="updateCoach()">
+      <div class="mb-3">
+        <label for="editCoachName" class="form-label">Name</label>
+        <input type="text" class="form-control" id="editCoachName" [(ngModel)]="editingCoach.name" name="editCoachName" required>
+      </div>
+      <div class="mb-3">
+        <label for="editCoachEmail" class="form-label">Email</label>
+        <input type="email" class="form-control" id="editCoachEmail" [(ngModel)]="editingCoach.email" name="editCoachEmail" required>
+      </div>
+      <div class="mb-3">
+        <label for="editCoachBio" class="form-label">Bio</label>
+        <textarea class="form-control" id="editCoachBio" [(ngModel)]="editingCoach.bio" name="editCoachBio" rows="3"></textarea>
+      </div>
+      <button type="submit" class="btn btn-primary">Update Coach</button>
+      <button type="button" class="btn btn-secondary ms-2" (click)="editingCoach = null">Cancel</button>
+    </form>
+  </div>
+</div>
