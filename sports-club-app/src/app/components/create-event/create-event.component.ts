@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -11,7 +11,7 @@ import { FirestoreService } from '../../services/firestore.service';
   templateUrl: './create-event.component.html',
   styleUrls: ['./create-event.css']
 })
-export class CreateEventComponent {
+export class CreateEventComponent implements OnInit {
   newEvent = {
     title: '',
     description: '',
@@ -24,8 +24,17 @@ export class CreateEventComponent {
     qrCodeData: ''
   };
   daysOfWeek = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
+  locations: any[] = [];
 
   constructor(private firestoreService: FirestoreService, private router: Router) { }
+
+  ngOnInit(): void {
+    this.loadLocations();
+  }
+
+  async loadLocations() {
+    this.locations = await this.firestoreService.getLocations();
+  }
 
   onDayChange(event: any) {
     const day = event.target.value;
