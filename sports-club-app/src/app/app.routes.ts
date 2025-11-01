@@ -6,6 +6,8 @@ import { ProfileComponent } from './components/profile/profile.component';
 import { authGuard } from './guards/auth.guard';
 import { ManageLocationsComponent } from './components/manage-locations/manage-locations.component';
 import { ManageEventsComponent } from './components/manage-events/manage-events.component';
+import { StatisticsComponent } from './components/statistics/statistics.component';
+import { CalendarComponent } from './components/calendar/calendar.component';
 
 export const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -13,6 +15,8 @@ export const routes: Routes = [
   { path: 'profile', component: ProfileComponent, canActivate: [authGuard] },
   { path: 'manage-locations', component: ManageLocationsComponent, canActivate: [authGuard] },
   { path: 'manage-events', component: ManageEventsComponent, canActivate: [authGuard] },
+  { path: 'statistics', component: StatisticsComponent, canActivate: [authGuard] },
+  { path: 'calendar', component: CalendarComponent, canActivate: [authGuard] },
   { path: 'checkin/:eventId', component: CheckInComponent },
   { path: '', redirectTo: '/login', pathMatch: 'full' },
 ];
