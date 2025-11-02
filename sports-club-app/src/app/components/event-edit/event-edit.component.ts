@@ -43,6 +43,9 @@ export class EventEditComponent implements OnInit {
       })
     ).subscribe(event => {
       this.event = event;
+      if (!this.event.schedule) {
+        this.event.schedule = [];
+      }
     });
   }
 
