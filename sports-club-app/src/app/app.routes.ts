@@ -12,6 +12,7 @@ import { LocationListComponent } from './components/location-list/location-list.
 import { LocationEditComponent } from './components/location-edit/location-edit.component';
 import { EventListComponent } from './components/event-list/event-list.component';
 import { EventEditComponent } from './components/event-edit/event-edit.component';
+import { EventPublicDetailComponent } from './components/event-public-detail/event-public-detail.component';
 
 export const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -36,5 +37,6 @@ export const routes: Routes = [
   { path: 'profile', component: ProfileComponent, canActivate: [authGuard] },
   { path: 'calendar', component: CalendarComponent, canActivate: [authGuard] },
   { path: 'checkin/:eventId', component: CheckInComponent },
+  { path: 'events/:id', component: EventPublicDetailComponent },
   { path: '', redirectTo: '/login', pathMatch: 'full' },
 ];

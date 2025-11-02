@@ -1,0 +1,21 @@
+<div class="modal-backdrop fade show"></div>
+<div class="modal fade show d-block" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">{{ title }}</h5>
+        <button type="button" class="btn-close" (click)="closeModal()"></button>
+      </div>
+      <div class="modal-body">
+        <p *ngIf="contentType === 'text'">{{ content }}</p>
+        <div *ngIf="contentType === 'qr'" class="text-center">
+          <qr-code [value]="content"></qr-code>
+          <a [href]="content" target="_blank" class="d-block mt-2">Manual Check-in Link</a>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="closeModal()">Close</button>
+      </div>
+    </div>
+  </div>
+</div>

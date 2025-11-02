@@ -1,0 +1,66 @@
+<div class="container mt-4 printable" *ngIf="event$ | async as event">
+  <div class="row">
+    <div class="col-md-8">
+      <h1>{{ event.name }}</h1>
+      <markdown [data]="event.description"></markdown>
+
+      <h3 class="mt-4">Schedule</h3>
+      <ul class="list-group">
+        <li *ngFor="let slot of event.schedule" class="list-group-item">
+          {{ slot.day }}s from {{ slot.startTime }} to {{ slot.endTime }}
+        </li>
+      </ul>
+
+      <h3 class="mt-4">Coaches</h3>
+      <div *ngIf="coaches$ | async as coaches">
+        <div *ngFor="let coach of coaches" class="d-flex align-items-center mb-3">
+          <div class="flex-shrink-0">
+            <!-- Placeholder for coach image -->
+            <img src="https://via.placeholder.com/100" class="rounded-circle" alt="{{ coach.name }}">
+          </div>
+          <div class="flex-grow-1 ms-3">
+            <h5>{{ coach.name }}</h5>
+            <p>{{ coach.bio }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">Event Details</h5>
+          <div *ngIf="location$ | async as location">
+            <p><strong>Location:</strong> {{ location.name }}</p>
+            <p>{{ location.address }}</p>
+            <ejs-maps id='container' [zoomSettings]='zoomSettings' [centerPosition]="centerPosition">
+              <e-layers>
+                  <e-layer layerType='OSM' [markerSettings]='[
+                      {
+                          visible: true,
+                          height: 25,
+                          width: 15,
+                          dataSource: [
+                            {
+                              latitude: location.latitude,
+                              longitude: location.longitude,
+                              name: location.name
+                            }
+                          ],
+                          tooltipSettings: {
+                              visible: true,
+                              valuePath: "name"
+                          }
+                      }
+                  ]'></e-layer>
+              </e-layers>
+            </ejs-maps>
+          </div>
+          <div class="mt-4 text-center">
+            <h5>Scan to Check In</h5>
+            <qr-code [value]="(qrCodeData$ | async) || ''"></qr-code>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
