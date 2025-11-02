@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { FirestoreService, Event, Location, Coach } from '../../services/firestore.service';
 import { Observable, of, from } from 'rxjs';
-import { switchMap } from 'rxjs/operators';
+import { switchMap, map } from 'rxjs/operators';
 import { QrCodeComponent } from 'ng-qrcode';
 import { MarkdownModule } from 'ngx-markdown';
 import { LeafletModule } from '@bluehalo/ngx-leaflet';
@@ -40,6 +40,12 @@ export class EventPublicDetailComponent implements OnInit {
         } else {
           return of(null);
         }
+      }),
+      map(event => {
+        if (event && !event.schedule) {
+          event.schedule = [];
+        }
+        return event;
       })
     );
 
