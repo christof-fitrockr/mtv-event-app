@@ -5,16 +5,21 @@ import { DateAdapter, provideCalendar, CalendarEvent, CalendarView, CalendarMont
 import { adapterFactory } from 'angular-calendar/date-adapters/date-fns';
 import { FirestoreService } from '../../services/firestore.service';
 import { addDays, setHours, setMinutes, startOfDay } from 'date-fns';
+import { EventDetailsComponent } from '../event-details/event-details.component';
 
 interface MyCalendarEvent extends CalendarEvent {
-  location: string;
-  coaches: string[];
+  location: any;
+  coaches: any[];
+  description: string;
+  maxParticipants: number;
+  occupation: number;
+  averageOccupation: number;
 }
 
 @Component({
   selector: 'app-calendar',
   standalone: true,
-  imports: [CommonModule, FormsModule, CalendarMonthViewComponent, CalendarWeekViewComponent, CalendarDayViewComponent, CalendarDatePipe],
+  imports: [CommonModule, FormsModule, CalendarMonthViewComponent, CalendarWeekViewComponent, CalendarDayViewComponent, CalendarDatePipe, EventDetailsComponent],
   templateUrl: './calendar.component.html',
   styleUrls: ['./calendar.css'],
   providers: [
@@ -25,26 +30,41 @@ interface MyCalendarEvent extends CalendarEvent {
   ],
 })
 export class CalendarComponent implements OnInit {
-  view: CalendarView = CalendarView.Week;
+  view: CalendarView | 'table' = CalendarView.Week;
   viewDate: Date = new Date();
   events: MyCalendarEvent[] = [];
   locations: any[] = [];
   locationFilter: string = '';
   CalendarView = CalendarView;
+  selectedEvent: MyCalendarEvent | null = null;
 
   constructor(private firestoreService: FirestoreService) {}
 
   ngOnInit(): void {
     this.loadEvents();
-    this.loadLocations();
   }
 
   async loadEvents() {
-    const dbEvents = await this.firestoreService.getAllEvents();
+    const [dbEvents, locations, coaches, attendance] = await Promise.all([
+      this.firestoreService.getAllEvents(),
+      this.firestoreService.getLocations(),
+      this.firestoreService.getAllCoaches(),
+      this.firestoreService.getAllAttendance()
+    ]);
+
+    const locationsMap = new Map(locations.map(l => [l.id, l]));
+    const coachesMap = new Map(coaches.map(c => [c.id, c]));
+    const attendanceMap = new Map<string, number>();
+
+    attendance.forEach(att => {
+      const key = `${att.eventId}-${att.dateOfEvent}`;
+      attendanceMap.set(key, (attendanceMap.get(key) || 0) + 1);
+    });
+
     const calendarEvents: MyCalendarEvent[] = [];
     const dayMap = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
 
-    dbEvents.forEach(event => {
+    for (const event of dbEvents) {
       if (event.startDate && event.endDate && event.recurrenceDays && event.startTime && event.endTime) {
         let current = new Date(event.startDate);
         const end = new Date(event.endDate);
@@ -54,38 +74,45 @@ export class CalendarComponent implements OnInit {
         while (current <= end) {
           const dayOfWeek = dayMap[current.getDay()];
           if (event.recurrenceDays.includes(dayOfWeek)) {
-            const start = setMinutes(setHours(startOfDay(current), startHour), startMinute);
-            const end = setMinutes(setHours(startOfDay(current), endHour), endMinute);
+            const dateStr = current.toISOString().split('T')[0];
+            const occupation = attendanceMap.get(`${event.id}-${dateStr}`) || 0;
+
             calendarEvents.push({
-              start,
-              end,
-              title: event.title,
-              location: event.location,
-              coaches: event.coaches || [],
+              start: setMinutes(setHours(startOfDay(current), startHour), startMinute),
+              end: setMinutes(setHours(startOfDay(current), endHour), endMinute),
+              title: `${event.title} (${occupation}/${event.maxParticipants})`,
+              location: locationsMap.get(event.location),
+              coaches: (event.coaches || []).map((coachId: string) => coachesMap.get(coachId)),
+              description: event.description,
+              maxParticipants: event.maxParticipants,
+              occupation: occupation,
+              averageOccupation: event.averageOccupation,
             });
           }
           current = addDays(current, 1);
         }
       }
-    });
+    }
     this.events = calendarEvents;
-  }
-
-  async loadLocations() {
-    this.locations = await this.firestoreService.getLocations();
+    this.locations = locations;
   }
 
   filterEvents() {
     // This will be implemented later if needed
   }
 
-  setView(view: CalendarView) {
+  setView(view: CalendarView | 'table') {
     this.view = view;
+    if (view === 'table') {
+      this.events.sort((a, b) => a.start.getTime() - b.start.getTime());
+    }
   }
 
   handleEvent(action: string, event: CalendarEvent): void {
-    const myEvent = event as MyCalendarEvent;
-    const coaches = myEvent.coaches?.join(', ');
-    alert(`Event ${action}: ${event.title}\nCoaches: ${coaches}`);
+    this.selectedEvent = event as MyCalendarEvent;
+  }
+
+  closeModal(): void {
+    this.selectedEvent = null;
   }
 }

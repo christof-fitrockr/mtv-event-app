@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Firestore, collection, addDoc, doc, getDoc, getDocs, Timestamp, query, where, updateDoc, deleteDoc, collectionGroup, collectionData } from '@angular/fire/firestore';
 import { Observable } from 'rxjs';
+import { addDays } from 'date-fns';
 
 @Injectable({
   providedIn: 'root'
@@ -78,6 +79,39 @@ export class FirestoreService {
       checkInTime: Timestamp.now(),
       dateOfEvent: date,
     });
+
+    // Recalculate average occupation
+    const event = await this.getEvent(eventId);
+    if (event) {
+      const allAttendance = await this.getAllAttendanceForEvent(eventId);
+      const totalCapacity = this.calculateTotalCapacity(event);
+      const averageOccupation = totalCapacity > 0 ? (allAttendance.length / totalCapacity) * 100 : 0;
+      await this.updateEvent(eventId, { averageOccupation });
+    }
+  }
+
+  async getAllAttendanceForEvent(eventId: string): Promise<any[]> {
+    const attendanceCollection = collection(this.firestore, 'events', eventId, 'attendance');
+    const querySnapshot = await getDocs(attendanceCollection);
+    return querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+  }
+
+  calculateTotalCapacity(event: any): number {
+    let totalCapacity = 0;
+    if (event.startDate && event.endDate && event.recurrenceDays && event.maxParticipants) {
+      let current = new Date(event.startDate);
+      const end = new Date(event.endDate);
+      const dayMap = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
+
+      while (current <= end) {
+        const dayOfWeek = dayMap[current.getDay()];
+        if (event.recurrenceDays.includes(dayOfWeek)) {
+          totalCapacity += event.maxParticipants;
+        }
+        current = addDays(current, 1);
+      }
+    }
+    return totalCapacity;
   }
 
   async getAttendance(eventId: string, date: string): Promise<any[]> {
@@ -85,6 +119,11 @@ export class FirestoreService {
     const q = query(attendanceCollection, where('dateOfEvent', '==', date));
     const querySnapshot = await getDocs(q);
     return querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+  }
+
+  async getAttendanceForEventInstance(eventId: string, date: string): Promise<number> {
+    const attendance = await this.getAttendance(eventId, date);
+    return attendance.length;
   }
 
   async getAllAttendance(): Promise<any[]> {
@@ -102,6 +141,12 @@ export class FirestoreService {
     const locationCollection = collection(this.firestore, 'locations');
     const querySnapshot = await getDocs(locationCollection);
     return querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+  }
+
+  async getLocation(locationId: string): Promise<any> {
+    const locationDoc = doc(this.firestore, 'locations', locationId);
+    const docSnap = await getDoc(locationDoc);
+    return docSnap.exists() ? { id: docSnap.id, ...docSnap.data() } : null;
   }
 
   async addLocation(locationData: any): Promise<string> {
@@ -125,6 +170,18 @@ export class FirestoreService {
   getCoaches(): Observable<any[]> {
     const coachCollection = collection(this.firestore, 'coaches');
     return collectionData(coachCollection, { idField: 'id' });
+  }
+
+  async getAllCoaches(): Promise<any[]> {
+    const coachCollection = collection(this.firestore, 'coaches');
+    const querySnapshot = await getDocs(coachCollection);
+    return querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+  }
+
+  async getCoach(coachId: string): Promise<any> {
+    const coachDoc = doc(this.firestore, 'coaches', coachId);
+    const docSnap = await getDoc(coachDoc);
+    return docSnap.exists() ? { id: docSnap.id, ...docSnap.data() } : null;
   }
 
   async addCoach(coachData: any): Promise<string> {
