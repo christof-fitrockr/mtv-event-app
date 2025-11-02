@@ -46,7 +46,8 @@ export class CoachEditComponent implements OnInit {
         this.router.navigate(['/admin/coaches']);
       });
     } else {
-      this.firestoreService.updateCoach(this.coach).then(() => {
+      const { id, ...coachData } = this.coach;
+      this.firestoreService.updateCoach(coachData).then(() => {
         this.router.navigate(['/admin/coaches']);
       });
     }
