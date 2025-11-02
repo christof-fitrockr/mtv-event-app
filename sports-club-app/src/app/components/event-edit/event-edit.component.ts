@@ -5,12 +5,12 @@ import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { FirestoreService, Event, Schedule, Location } from '../../services/firestore.service';
 import { Observable, of } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
-import { MarkdownEditorModule } from 'ngx-markdown-editor';
+import { LMarkdownEditorModule } from 'ngx-markdown-editor';
 
 @Component({
   selector: 'app-event-edit',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule, MarkdownEditorModule],
+  imports: [CommonModule, FormsModule, RouterModule, LMarkdownEditorModule],
   templateUrl: './event-edit.component.html',
   styleUrls: ['./event-edit.component.css']
 })
