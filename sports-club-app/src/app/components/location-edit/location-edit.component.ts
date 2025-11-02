@@ -46,8 +46,7 @@ export class LocationEditComponent implements OnInit {
         this.router.navigate(['/admin/locations']);
       });
     } else {
-      const { id, ...locationData } = this.location;
-      this.firestoreService.updateLocation(id!, locationData).then(() => {
+      this.firestoreService.updateLocation(this.location.id!, this.location).then(() => {
         this.router.navigate(['/admin/locations']);
       });
     }

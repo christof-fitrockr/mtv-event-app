@@ -29,7 +29,7 @@ export class EventEditComponent implements OnInit {
 
   ngOnInit(): void {
     this.tinymceConfig = {
-      base_url: '/tinymce',
+      base_url: '/browser/tinymce',
       suffix: '.min',
       plugins: 'lists link image table code help wordcount',
       menubar: 'file edit view insert format tools table help'
@@ -59,8 +59,7 @@ export class EventEditComponent implements OnInit {
         this.router.navigate(['/admin/events']);
       });
     } else {
-      const { id, ...eventData } = this.event;
-      this.firestoreService.updateEvent(id!, eventData).then(() => {
+      this.firestoreService.updateEvent(this.event.id!, this.event).then(() => {
         this.router.navigate(['/admin/events']);
       });
     }
