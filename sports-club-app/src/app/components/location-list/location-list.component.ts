@@ -31,8 +31,9 @@ export class LocationListComponent implements OnInit {
   search(text: string): Location[] {
     return this.locations.filter(location => {
       const term = text.toLowerCase();
-      return location.name.toLowerCase().includes(term)
-        || location.address.toLowerCase().includes(term);
+      const nameMatch = location.name && location.name.toLowerCase().includes(term);
+      const addressMatch = location.address && location.address.toLowerCase().includes(term);
+      return nameMatch || addressMatch;
     });
   }
 
