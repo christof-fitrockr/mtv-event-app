@@ -25,12 +25,4 @@ export class LoginComponent {
     }
   }
 
-  async register() {
-    try {
-      await this.authService.register(this.email, this.password);
-      this.router.navigate(['/admin']);
-    } catch (error) {
-      console.error('Registration failed:', error);
-    }
-  }
 }

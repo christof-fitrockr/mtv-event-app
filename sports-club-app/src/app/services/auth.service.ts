@@ -16,10 +16,6 @@ export class AuthService {
     return signInWithEmailAndPassword(this.auth, email, password);
   }
 
-  async register(email: string, password: string): Promise<any> {
-    return createUserWithEmailAndPassword(this.auth, email, password);
-  }
-
   async logout(): Promise<void> {
     return signOut(this.auth);
   }
