@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { CalendarModule, DateAdapter, CalendarEvent, CalendarView } from 'angular-calendar';
+import { DateAdapter, provideCalendar, CalendarEvent, CalendarView, CalendarMonthViewComponent, CalendarWeekViewComponent, CalendarDayViewComponent, CalendarDatePipe } from 'angular-calendar';
 import { adapterFactory } from 'angular-calendar/date-adapters/date-fns';
 import { FirestoreService } from '../../services/firestore.service';
 import { addDays, setHours, setMinutes, startOfDay } from 'date-fns';
@@ -14,14 +14,14 @@ interface MyCalendarEvent extends CalendarEvent {
 @Component({
   selector: 'app-calendar',
   standalone: true,
-  imports: [CommonModule, FormsModule, CalendarModule],
+  imports: [CommonModule, FormsModule, CalendarMonthViewComponent, CalendarWeekViewComponent, CalendarDayViewComponent, CalendarDatePipe],
   templateUrl: './calendar.component.html',
   styleUrls: ['./calendar.css'],
   providers: [
-    {
+    provideCalendar({
       provide: DateAdapter,
       useFactory: adapterFactory,
-    },
+    }),
   ],
 })
 export class CalendarComponent implements OnInit {
