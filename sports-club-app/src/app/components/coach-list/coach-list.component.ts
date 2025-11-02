@@ -33,9 +33,10 @@ export class CoachListComponent implements OnInit {
   search(text: string): Coach[] {
     return this.coaches.filter(coach => {
       const term = text.toLowerCase();
-      return coach.name.toLowerCase().includes(term)
-        || coach.email.toLowerCase().includes(term)
-        || coach.bio.toLowerCase().includes(term);
+      const nameMatch = coach.name && coach.name.toLowerCase().includes(term);
+      const emailMatch = coach.email && coach.email.toLowerCase().includes(term);
+      const bioMatch = coach.bio && coach.bio.toLowerCase().includes(term);
+      return nameMatch || emailMatch || bioMatch;
     });
   }
 

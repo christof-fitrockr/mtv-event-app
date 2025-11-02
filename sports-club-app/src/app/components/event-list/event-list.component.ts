@@ -39,10 +39,11 @@ export class EventListComponent implements OnInit {
   search(text: string): Event[] {
     return this.events.filter(event => {
       const term = text.toLowerCase();
-      return event.name.toLowerCase().includes(term)
-        || event.locationId.toLowerCase().includes(term)
-        || event.startDate.toLowerCase().includes(term)
-        || event.endDate.toLowerCase().includes(term);
+      const nameMatch = event.name && event.name.toLowerCase().includes(term);
+      const locationMatch = event.locationId && this.locationsMap[event.locationId] && this.locationsMap[event.locationId].toLowerCase().includes(term);
+      const startDateMatch = event.startDate && event.startDate.toLowerCase().includes(term);
+      const endDateMatch = event.endDate && event.endDate.toLowerCase().includes(term);
+      return nameMatch || locationMatch || startDateMatch || endDateMatch;
     });
   }
 
