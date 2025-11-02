@@ -5,12 +5,12 @@ import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { FirestoreService, Event, Schedule, Location } from '../../services/firestore.service';
 import { Observable, of } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
-import { EditorModule } from '@tinymce/tinymce-angular';
+import { MarkdownEditorModule } from 'ngx-markdown-editor';
 
 @Component({
   selector: 'app-event-edit',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule, EditorModule],
+  imports: [CommonModule, FormsModule, RouterModule, MarkdownEditorModule],
   templateUrl: './event-edit.component.html',
   styleUrls: ['./event-edit.component.css']
 })
@@ -19,7 +19,6 @@ export class EventEditComponent implements OnInit {
   isNew = true;
   newSchedule: Schedule = { day: 'Monday', startTime: '', endTime: '' };
   locations: Location[] = [];
-  tinymceConfig: any;
 
   constructor(
     private route: ActivatedRoute,
@@ -28,12 +27,6 @@ export class EventEditComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.tinymceConfig = {
-      base_url: '/browser/tinymce',
-      suffix: '.min',
-      plugins: 'lists link image table code help wordcount',
-      menubar: 'file edit view insert format tools table help'
-    };
     this.firestoreService.getLocations().then(locations => {
       this.locations = locations;
     });
