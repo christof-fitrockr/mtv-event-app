@@ -14,6 +14,8 @@ export interface Location {
   id?: string;
   name: string;
   address: string;
+  latitude?: number;
+  longitude?: number;
 }
 
 export interface Schedule {
@@ -228,5 +230,11 @@ export class FirestoreService {
   async deleteCoach(coachId: string): Promise<void> {
     const coachDoc = doc(this.firestore, 'coaches', coachId);
     await deleteDoc(coachDoc);
+  }
+
+  getCoachesByIds(coachIds: string[]): Observable<Coach[]> {
+    const coachCollection = collection(this.firestore, 'coaches');
+    const q = query(coachCollection, where('__name__', 'in', coachIds));
+    return collectionData(q, { idField: 'id' }) as Observable<Coach[]>;
   }
 }

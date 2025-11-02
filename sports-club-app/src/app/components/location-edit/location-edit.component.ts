@@ -14,7 +14,7 @@ import { switchMap } from 'rxjs/operators';
   styleUrls: ['./location-edit.component.css']
 })
 export class LocationEditComponent implements OnInit {
-  location: Location = { name: '', address: '' };
+  location: Location = { name: '', address: '', latitude: 0, longitude: 0 };
   isNew = true;
 
   constructor(
@@ -32,7 +32,7 @@ export class LocationEditComponent implements OnInit {
           return this.firestoreService.getLocation(id);
         } else {
           this.isNew = true;
-          return of({ name: '', address: '' });
+          return of({ name: '', address: '', latitude: 0, longitude: 0 });
         }
       })
     ).subscribe(location => {
