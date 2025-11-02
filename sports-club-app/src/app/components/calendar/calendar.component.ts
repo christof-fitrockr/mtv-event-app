@@ -62,34 +62,38 @@ export class CalendarComponent implements OnInit {
     });
 
     const calendarEvents: MyCalendarEvent[] = [];
-    const dayMap = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
+    const dayMap = {
+      'Sunday': 0, 'Monday': 1, 'Tuesday': 2, 'Wednesday': 3, 'Thursday': 4, 'Friday': 5, 'Saturday': 6
+    };
 
     for (const event of dbEvents) {
-      if (event.startDate && event.endDate && event.recurrenceDays && event.startTime && event.endTime) {
-        let current = new Date(event.startDate);
-        const end = new Date(event.endDate);
-        const [startHour, startMinute] = event.startTime.split(':').map(Number);
-        const [endHour, endMinute] = event.endTime.split(':').map(Number);
+      if (event.startDate && event.endDate && event.schedule) {
+        for (const slot of event.schedule) {
+          let current = new Date(event.startDate);
+          const end = new Date(event.endDate);
+          const [startHour, startMinute] = slot.startTime.split(':').map(Number);
+          const [endHour, endMinute] = slot.endTime.split(':').map(Number);
+          const targetDay = dayMap[slot.day as keyof typeof dayMap];
 
-        while (current <= end) {
-          const dayOfWeek = dayMap[current.getDay()];
-          if (event.recurrenceDays.includes(dayOfWeek)) {
-            const dateStr = current.toISOString().split('T')[0];
-            const occupation = attendanceMap.get(`${event.id}-${dateStr}`) || 0;
+          while (current <= end) {
+            if (current.getDay() === targetDay) {
+              const dateStr = current.toISOString().split('T')[0];
+              const occupation = attendanceMap.get(`${event.id}-${dateStr}`) || 0;
 
-            calendarEvents.push({
-              start: setMinutes(setHours(startOfDay(current), startHour), startMinute),
-              end: setMinutes(setHours(startOfDay(current), endHour), endMinute),
-              title: `${event.title} (${occupation}/${event.maxParticipants})`,
-              location: locationsMap.get(event.location),
-              coaches: (event.coaches || []).map((coachId: string) => coachesMap.get(coachId)),
-              description: event.description,
-              maxParticipants: event.maxParticipants,
-              occupation: occupation,
-              averageOccupation: event.averageOccupation,
-            });
+              calendarEvents.push({
+                start: setMinutes(setHours(startOfDay(current), startHour), startMinute),
+                end: setMinutes(setHours(startOfDay(current), endHour), endMinute),
+                title: `${event.name} (${occupation}/${event.maxParticipants || 'N/A'})`,
+                location: locationsMap.get(event.locationId),
+                coaches: (event.coachIds || []).map((coachId: string) => coachesMap.get(coachId)),
+                description: event.description,
+                maxParticipants: event.maxParticipants,
+                occupation: occupation,
+                averageOccupation: event.averageOccupation,
+              });
+            }
+            current = addDays(current, 1);
           }
-          current = addDays(current, 1);
         }
       }
     }

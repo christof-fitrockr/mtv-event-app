@@ -1,0 +1,28 @@
+<div class="container mt-4">
+  <h2>Manage Coaches</h2>
+  <div class="d-flex justify-content-between mb-3">
+    <input type="text" class="form-control w-50" placeholder="Filter coaches..." [formControl]="filter">
+    <button class="btn btn-primary" [routerLink]="['/admin/coaches/new']">Add New Coach</button>
+  </div>
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Bio</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let coach of filteredCoaches$ | async">
+        <td>{{ coach.name }}</td>
+        <td>{{ coach.email }}</td>
+        <td>{{ coach.bio }}</td>
+        <td>
+          <button class="btn btn-sm btn-warning me-2" [routerLink]="['/admin/coaches/edit', coach.id]">Edit</button>
+          <button class="btn btn-sm btn-danger" (click)="deleteCoach(coach.id!)">Delete</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

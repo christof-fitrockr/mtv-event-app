@@ -1,0 +1,30 @@
+<div class="container mt-4">
+  <h2>Manage Events</h2>
+  <div class="d-flex justify-content-between mb-3">
+    <input type="text" class="form-control w-50" placeholder="Filter events..." [formControl]="filter">
+    <button class="btn btn-primary" [routerLink]="['/admin/events/new']">Add New Event</button>
+  </div>
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Location</th>
+        <th>Start Date</th>
+        <th>End Date</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let event of filteredEvents$ | async">
+        <td>{{ event.name }}</td>
+        <td>{{ locationsMap[event.locationId] }}</td>
+        <td>{{ event.startDate | date }}</td>
+        <td>{{ event.endDate | date }}</td>
+        <td>
+          <button class="btn btn-sm btn-warning me-2" [routerLink]="['/admin/events/edit', event.id]">Edit</button>
+          <button class="btn btn-sm btn-danger" (click)="deleteEvent(event.id!)">Delete</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

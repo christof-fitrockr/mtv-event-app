@@ -3,6 +3,36 @@ import { Firestore, collection, addDoc, doc, getDoc, getDocs, Timestamp, query, 
 import { Observable } from 'rxjs';
 import { addDays } from 'date-fns';
 
+export interface Coach {
+  id?: string;
+  name: string;
+  email: string;
+  bio: string;
+}
+
+export interface Location {
+  id?: string;
+  name: string;
+  address: string;
+}
+
+export interface Schedule {
+  day: string;
+  startTime: string;
+  endTime: string;
+}
+
+export interface Event {
+  id?: string;
+  name: string;
+  locationId: string;
+  description: string;
+  startDate: string;
+  endDate: string;
+  schedule: Schedule[];
+  coachIds: string[];
+}
+
 @Injectable({
   providedIn: 'root'
 })
