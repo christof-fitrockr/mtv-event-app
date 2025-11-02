@@ -32,28 +32,11 @@
           <div *ngIf="location$ | async as location">
             <p><strong>Location:</strong> {{ location.name }}</p>
             <p>{{ location.address }}</p>
-            <ejs-maps id='container' [zoomSettings]='zoomSettings' [centerPosition]="centerPosition">
-              <e-layers>
-                  <e-layer layerType='OSM' [markerSettings]='[
-                      {
-                          visible: true,
-                          height: 25,
-                          width: 15,
-                          dataSource: [
-                            {
-                              latitude: location.latitude,
-                              longitude: location.longitude,
-                              name: location.name
-                            }
-                          ],
-                          tooltipSettings: {
-                              visible: true,
-                              valuePath: "name"
-                          }
-                      }
-                  ]'></e-layer>
-              </e-layers>
-            </ejs-maps>
+            <div style="height: 300px;"
+                 leaflet
+                 [leafletOptions]="leafletOptions"
+                 [leafletLayers]="leafletLayers">
+            </div>
           </div>
           <div class="mt-4 text-center">
             <h5>Scan to Check In</h5>

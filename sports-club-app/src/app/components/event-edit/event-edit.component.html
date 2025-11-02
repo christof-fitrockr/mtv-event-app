@@ -14,12 +14,11 @@
     </div>
     <div class="mb-3">
       <label for="description" class="form-label">Description</label>
-      <editor
-        [init]="tinymceConfig"
-        apiKey="no-api-key"
+      <markdown-editor
         [(ngModel)]="event.description"
         name="description"
-      ></editor>
+        required
+      ></markdown-editor>
     </div>
     <div class="mb-3">
       <label for="startDate" class="form-label">Start Date</label>
