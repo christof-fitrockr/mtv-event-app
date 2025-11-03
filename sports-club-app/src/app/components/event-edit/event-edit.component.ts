@@ -46,6 +46,9 @@ export class EventEditComponent implements OnInit {
       if (!this.event.schedule) {
         this.event.schedule = [];
       }
+      if (this.event.description === undefined || this.event.description === null) {
+        this.event.description = '';
+      }
     });
   }
 
