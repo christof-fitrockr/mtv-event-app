@@ -19,7 +19,7 @@ interface MyCalendarEvent extends CalendarEvent {
 @Component({
   selector: 'app-calendar',
   standalone: true,
-  imports: [CommonModule, FormsModule, CalendarMonthViewComponent, CalendarWeekViewComponent, CalendarDayViewComponent, CalendarDatePipe, EventDetailsComponent],
+  imports: [CommonModule, FormsModule, CalendarMonthViewComponent, CalendarWeekViewComponent, CalendarDayViewComponent, EventDetailsComponent],
   templateUrl: './calendar.component.html',
   styleUrls: ['./calendar.css'],
   providers: [

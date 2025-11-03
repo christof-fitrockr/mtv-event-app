@@ -1,16 +1,15 @@
-import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
-import { FormsModule } from '@angular/forms';
-import { ActivatedRoute, Router, RouterModule } from '@angular/router';
-import { FirestoreService, Event, Schedule, Location } from '../../services/firestore.service';
-import { Observable, of } from 'rxjs';
-import { switchMap } from 'rxjs/operators';
-import { LMarkdownEditorModule } from 'ngx-markdown-editor';
+import {CommonModule} from '@angular/common';
+import {Component, OnInit} from '@angular/core';
+import {FormsModule} from '@angular/forms';
+import {ActivatedRoute, Router, RouterModule} from '@angular/router';
+import {Event, FirestoreService, Location, Schedule} from '../../services/firestore.service';
+import {of} from 'rxjs';
+import {switchMap} from 'rxjs/operators';
 
 @Component({
   selector: 'app-event-edit',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule, LMarkdownEditorModule],
+  imports: [CommonModule, FormsModule, RouterModule],
   templateUrl: './event-edit.component.html',
   styleUrls: ['./event-edit.component.css']
 })

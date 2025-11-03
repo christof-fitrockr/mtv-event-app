@@ -14,11 +14,11 @@
     </div>
     <div class="mb-3">
       <label for="description" class="form-label">Description</label>
-      <markdown-editor
+      <textarea class="form-control" id="description" rows="3"
         [(ngModel)]="event.description"
         name="description"
         required
-      ></markdown-editor>
+      ></textarea>
     </div>
     <div class="mb-3">
       <label for="startDate" class="form-label">Start Date</label>
