@@ -1,0 +1,49 @@
+<div class="container mt-4" *ngIf="event">
+  <h2>Manage Participants for {{ event.name }}</h2>
+
+  <!-- Add Participant Form -->
+  <div class="card mb-4">
+    <div class="card-body">
+      <h5 class="card-title">Add New Participant</h5>
+      <div class="input-group">
+        <input type="text" class="form-control" [(ngModel)]="newParticipantName" placeholder="Participant's Name">
+        <button class="btn btn-primary" (click)="addParticipant()">Add</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Generate Standard Participants -->
+  <div class="card mb-4">
+    <div class="card-body">
+      <h5 class="card-title">Generate Standard Participants</h5>
+      <div class="input-group">
+        <input type="number" class="form-control" [(ngModel)]="numberOfStandardParticipants" placeholder="Number of participants">
+        <button class="btn btn-secondary" (click)="generateStandardParticipants()">Generate</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Participant List -->
+  <div class="card">
+    <div class="card-body">
+      <h5 class="card-title">Participant List</h5>
+      <ul class="list-group">
+        <li *ngFor="let participant of event.participants" class="list-group-item d-flex justify-content-between align-items-center">
+          <div class="participant-info">
+            <input type="text" class="form-control" [value]="participant.name" (blur)="updateParticipantName(participant, $event.target.value)">
+            <small class="text-muted" *ngIf="participant.checkedIn">
+              Checked in at: {{ participant.checkInTimestamp?.toDate() | date:'medium' }}
+            </small>
+          </div>
+          <div class="participant-actions">
+            <div class="qr-code" #qrCodeEl>
+              <qr-code [value]="getQRCodeData(participant)" [size]="128" [errorCorrectionLevel]="'M'"></qr-code>
+            </div>
+            <button class="btn btn-sm btn-info ms-2" (click)="downloadQrCode(qrCodeEl.querySelector('canvas'), participant.name)">Download</button>
+            <button class="btn btn-sm btn-danger ms-2" (click)="deleteParticipant(participant.id)">Delete</button>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>

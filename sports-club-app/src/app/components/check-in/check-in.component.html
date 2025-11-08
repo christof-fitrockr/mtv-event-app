@@ -1,41 +1,19 @@
-<div class="container mt-5">
-  <div class="row justify-content-center">
-    <div class="col-md-6">
-      <div class="card">
-        <div class="card-body">
-          <div *ngIf="event; else loading">
-            <h2 class="card-title text-center mb-4">{{ event.title }}</h2>
-            <p><strong>Description:</strong> {{ event.description }}</p>
-            <p><strong>Location:</strong> {{ event.location }}</p>
-            <div class="mb-3">
-              <label for="eventDate" class="form-label">Select Event Date</label>
-              <select class="form-select" id="eventDate" [(ngModel)]="selectedDate" (change)="onDateChange()">
-                <option *ngFor="let date of eventDates" [value]="date">{{ date }}</option>
-              </select>
-            </div>
-            <hr>
-            <div *ngIf="!isCheckedIn; else alreadyCheckedIn">
-              <form (ngSubmit)="checkIn()">
-                <div class="mb-3">
-                  <label for="name" class="form-label">Your Name (Optional)</label>
-                  <input type="text" id="name" class="form-control" [(ngModel)]="name" name="name" placeholder="Enter your name">
-                </div>
-                <div class="d-grid">
-                  <button type="submit" class="btn btn-primary">Confirm Attendance</button>
-                </div>
-              </form>
-            </div>
-            <ng-template #alreadyCheckedIn>
-              <div class="alert alert-success text-center" role="alert">
-                You have successfully checked in for this event on {{ selectedDate }}!
-              </div>
-            </ng-template>
-          </div>
-          <ng-template #loading>
-            <p class="text-center">Loading event details...</p>
-          </ng-template>
-        </div>
-      </div>
-    </div>
+<div class="container mt-4">
+  <h2>Check-in Scanner</h2>
+
+  <div *ngIf="successMessage" class="alert alert-success">
+    {{ successMessage }}
+  </div>
+
+  <div *ngIf="errorMessage" class="alert alert-danger">
+    {{ errorMessage }}
+  </div>
+
+  <div class="scanner-container">
+    <zxing-scanner
+      *ngIf="scannerEnabled"
+      [formats]="allowedFormats"
+      (scanSuccess)="onScanSuccess($event)"
+    ></zxing-scanner>
   </div>
 </div>

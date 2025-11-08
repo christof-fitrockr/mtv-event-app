@@ -1,0 +1,13 @@
+.participant-info {
+  flex-grow: 1;
+  margin-right: 20px;
+}
+
+.participant-actions {
+  display: flex;
+  align-items: center;
+}
+
+.qr-code {
+  margin-right: 20px;
+}
