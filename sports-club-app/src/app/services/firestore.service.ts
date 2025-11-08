@@ -24,6 +24,13 @@ export interface Schedule {
   endTime: string;
 }
 
+export interface Participant {
+  id: string;
+  name: string;
+  checkedIn: boolean;
+  checkInTimestamp?: Timestamp;
+}
+
 export interface Event {
   id?: string;
   name: string;
@@ -33,6 +40,7 @@ export interface Event {
   endDate: string;
   schedule: Schedule[];
   coachIds: string[];
+  participants?: Participant[];
 }
 
 @Injectable({
@@ -73,6 +81,62 @@ export class FirestoreService {
   async deleteEvent(eventId: string): Promise<void> {
     const eventDoc = doc(this.firestore, 'events', eventId);
     await deleteDoc(eventDoc);
+  }
+
+  // --- Participant Management ---
+
+  async addParticipants(eventId: string, participantNames: string[]): Promise<void> {
+    const event = await this.getEvent(eventId);
+    if (!event) {
+      throw new Error('Event not found');
+    }
+    const newParticipants: Participant[] = participantNames.map(name => ({
+      id: doc(collection(this.firestore, '_')).id,
+      name,
+      checkedIn: false,
+    }));
+    const participants = [...(event.participants || []), ...newParticipants];
+    await this.updateEvent(eventId, { participants });
+  }
+
+  async updateParticipant(eventId: string, participant: Participant): Promise<void> {
+    const event = await this.getEvent(eventId);
+    if (!event) {
+      throw new Error('Event not found');
+    }
+    const participants = event.participants || [];
+    const participantIndex = participants.findIndex((p: Participant) => p.id === participant.id);
+    if (participantIndex > -1) {
+      participants[participantIndex] = participant;
+      await this.updateEvent(eventId, { participants });
+    } else {
+      throw new Error('Participant not found');
+    }
+  }
+
+  async deleteParticipant(eventId: string, participantId: string): Promise<void> {
+    const event = await this.getEvent(eventId);
+    if (!event) {
+      throw new Error('Event not found');
+    }
+    const participants = (event.participants || []).filter((p: Participant) => p.id !== participantId);
+    await this.updateEvent(eventId, { participants });
+  }
+
+  async checkInParticipant(eventId: string, participantId: string): Promise<void> {
+    const event = await this.getEvent(eventId);
+    if (!event) {
+      throw new Error('Event not found');
+    }
+    const participants = event.participants || [];
+    const participantIndex = participants.findIndex((p: Participant) => p.id === participantId);
+    if (participantIndex > -1) {
+      participants[participantIndex].checkedIn = true;
+      participants[participantIndex].checkInTimestamp = Timestamp.now();
+      await this.updateEvent(eventId, { participants });
+    } else {
+      throw new Error('Participant not found');
+    }
   }
 
   async getEventStatistics(): Promise<any[]> {

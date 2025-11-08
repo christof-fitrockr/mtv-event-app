@@ -1,98 +1,48 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { ZXingScannerModule } from '@zxing/ngx-scanner';
 import { FirestoreService } from '../../services/firestore.service';
-import { differenceInMilliseconds, parseISO } from 'date-fns';
+import { BarcodeFormat } from '@zxing/library';
 
 @Component({
   selector: 'app-check-in',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, ZXingScannerModule],
   templateUrl: './check-in.component.html',
   styleUrls: ['./check-in.component.css']
 })
-export class CheckInComponent implements OnInit {
-  event: any;
-  name = '';
-  isCheckedIn = false;
-  eventId: string | null = null;
-  eventDates: string[] = [];
-  selectedDate: string = '';
+export class CheckInComponent {
+  scannerEnabled = true;
+  successMessage = '';
+  errorMessage = '';
+  allowedFormats = [BarcodeFormat.QR_CODE];
 
-  constructor(
-    private route: ActivatedRoute,
-    private firestoreService: FirestoreService
-  ) { }
+  constructor(private firestoreService: FirestoreService) { }
 
-  ngOnInit(): void {
-    this.eventId = this.route.snapshot.paramMap.get('eventId');
-    if (this.eventId) {
-      this.loadEventAndDates();
-    }
-  }
+  async onScanSuccess(result: string): Promise<void> {
+    this.scannerEnabled = false;
+    this.successMessage = '';
+    this.errorMessage = '';
 
-  async loadEventAndDates() {
-    this.event = await this.firestoreService.getEvent(this.eventId!);
-    if (this.event) {
-      this.generateEventDates();
-      this.preselectClosestDate();
-      this.checkSessionStorage();
-    }
-  }
-
-  generateEventDates() {
-    if (!this.event.startDate || !this.event.endDate || !this.event.recurrenceDays) {
-      return;
-    }
-
-    const dates = [];
-    let current = new Date(this.event.startDate);
-    const end = new Date(this.event.endDate);
-    const dayMap = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
-
-    while (current <= end) {
-      const dayOfWeek = dayMap[current.getDay()];
-      if (this.event.recurrenceDays.includes(dayOfWeek)) {
-        dates.push(current.toISOString().slice(0, 10));
+    try {
+      const data = JSON.parse(result);
+      if (data.eventId && data.participantId) {
+        await this.firestoreService.checkInParticipant(data.eventId, data.participantId);
+        const event = await this.firestoreService.getEvent(data.eventId);
+        const participant = event.participants.find((p: any) => p.id === data.participantId);
+        this.successMessage = `Successfully checked in ${participant?.name}!`;
+      } else {
+        this.errorMessage = 'Invalid QR code.';
       }
-      current.setDate(current.getDate() + 1);
+    } catch (error) {
+      this.errorMessage = 'Error processing QR code.';
+      console.error(error);
     }
-    this.eventDates = dates;
-  }
 
-  preselectClosestDate() {
-    if (this.eventDates.length === 0) return;
-
-    const today = new Date();
-    let closestDate = this.eventDates[0];
-    let minDiff = Math.abs(differenceInMilliseconds(parseISO(closestDate), today));
-
-    for (let i = 1; i < this.eventDates.length; i++) {
-      const diff = Math.abs(differenceInMilliseconds(parseISO(this.eventDates[i]), today));
-      if (diff < minDiff) {
-        minDiff = diff;
-        closestDate = this.eventDates[i];
-      }
-    }
-    this.selectedDate = closestDate;
-  }
-
-  onDateChange() {
-    this.checkSessionStorage();
-  }
-
-  checkSessionStorage() {
-    const sessionKey = `${this.eventId}-${this.selectedDate}`;
-    this.isCheckedIn = !!sessionStorage.getItem(sessionKey);
-  }
-
-  async checkIn() {
-    if (this.isCheckedIn || !this.selectedDate) return;
-
-    await this.firestoreService.addAttendance(this.eventId!, this.selectedDate, { name: this.name });
-    const sessionKey = `${this.eventId}-${this.selectedDate}`;
-    sessionStorage.setItem(sessionKey, 'true');
-    this.isCheckedIn = true;
+    setTimeout(() => {
+      this.scannerEnabled = true;
+      this.successMessage = '';
+      this.errorMessage = '';
+    }, 5000); // Re-enable scanner after 5 seconds
   }
 }
